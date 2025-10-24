@@ -77,12 +77,12 @@ Table of Contents
 
    Technical trust in systems using asymmetric cryptography amounts to
    answering the question: is a given public key pk bound to a name n in
-   context c.  One example is, given an X509 certificate (as a
+   context c.  One example is, given an X.509 certificate (as a
    representative of a public key and name), doing PKIX path
-   construction and subsequent path validation to determine if the X509
+   construction and subsequent path validation to determine if the X.509
    is "valid" relative to a given set of trust roots.  In this example
    the trust registry is the set of roots together with the rules for
-   path validation and construction set down in RFC 5280 and any
+   path validation and construction set down in [RFC5280] and any
    additional local policy applied to the validation.
 
    The proliferation of distributed architectures have led to the
