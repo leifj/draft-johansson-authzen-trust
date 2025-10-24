@@ -19,35 +19,34 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
+title: "An AuthZEN profile for trust registries"
+abbrev: "AuthZEN Trust"
 category: info
 
-docname: draft-todo-yourname-protocol-latest
-submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
+docname: draft-johansson-authzen-trust-latest
+submissiontype: IETF
 number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: SEC 
+#workgroup: OAuth Working Group
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - authzen
+ - trust registries 
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+#  group: WG
+#  type: Working Group
+#  mail: WG@example.com
+#  arch: https://example.com/WG
+  github: leifj/draft-johansson-authzen-trust
+  latest: https://leifj.github.io/draft-johansson-authzen-trust
 
 author:
  -
-    fullname: Your Name Here
-    organization: Your Organization Here
-    email: your.email@example.com
+    fullname: Leif Johansson
+    organization: SIROS Foundation
+    email: leifj@siros.org
 
 normative:
 
