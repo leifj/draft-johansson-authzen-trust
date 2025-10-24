@@ -62,7 +62,7 @@ Trust registries come in many forms; ETSI trust status lists, OpenID Federation,
 
 # Introduction
 
-Technical trust in systems using asymmetric cryptography amounts to answering the question: is a given public key pk bound to a name n in context c. One example is, given an X509 certificate (as a representative of a public key and name), doing PKIX path construction and subsequent path validation to determine if the X509 is "valid" relative to a given set of trust roots. In this example the trust registry is the set of roots together with the rules for path validation and construction set down in RFC 5280 and any additional local policy applied to the validation.
+Technical trust in systems using asymmetric cryptography amounts to answering the question: is a given public key pk bound to a name n in context c. One example is, given an X.509 certificate (as a representative of a public key and name), doing PKIX path construction and subsequent path validation to determine if the X.509 is "valid" relative to a given set of trust roots. In this example the trust registry is the set of roots together with the rules for path validation and construction set down in [RFC5280] and any additional local policy applied to the validation.
 
 The proliferation of distributed architectures have led to the development of a multitude of trust registries each with their own APIs for querying the registry and rules for evaluating trust. Application developers are often faced with the choice of supporting exactly one of these which of course leads to interoperability challenges.
 
