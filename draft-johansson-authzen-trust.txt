@@ -73,12 +73,13 @@ Table of Contents
      4.2.  Resource
      4.3.  Action
      4.4.  Context
-     4.5.  Examples (non-normative)
-   5.  Security Considerations
-   6.  IANA Considerations
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+   5.  Authorization Response
+   6.  Examples (non-normative)
+   7.  Security Considerations
+   8.  IANA Considerations
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -184,7 +185,14 @@ Table of Contents
    information that is critical for the correct processing of the
    request.
 
-4.5.  Examples (non-normative)
+5.  Authorization Response
+
+   This profile does not constrain or profile the standard response
+   message format.  An implementation MAY choose to provide detailed
+   error messages or other contextual information as per the AuthZen
+   specification.
+
+6.  Examples (non-normative)
 
    The following example is a query to check if a provided certificate
    chain is bound to the name "did:foo:bla" and is allowed act as a EUDI
@@ -230,7 +238,18 @@ Table of Contents
      }
    }
 
-5.  Security Considerations
+   The following is an example response with no additional context:
+
+   {
+     "decision": true
+   }
+
+   The following is an hypothetical response with error messages: ~~~ {
+   "decision": false, "context": { "reason": { "403": "Unknown service -
+   contact helpdesk@registry.example.com for support using the following
+   identifier: #ID4711" } } } ~~~
+
+7.  Security Considerations
 
    The protocol described in this specification is meant to be used by
    applications that share a common security domain and it may be
@@ -245,13 +264,13 @@ Table of Contents
    In addition to the above the security considerations for
    authentication for AuthZen applies in equal measure to this profile.
 
-6.  IANA Considerations
+8.  IANA Considerations
 
    This document has no IANA actions.
 
-7.  References
+9.  References
 
-7.1.  Normative References
+9.1.  Normative References
 
    [AUTHZEN]  Gazitt, O., Brossard, D., and A. Tulshibagwale, "OpenID
               AuthZEN Authorization API", July 2024,
@@ -279,7 +298,7 @@ Table of Contents
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/rfc/rfc8259>.
 
-7.2.  Informative References
+9.2.  Informative References
 
    [NIST.SP.800-162]
               Hu, V. C., Ferraiolo, D., Kuhn, R., Schnitzer, A.,
