@@ -160,7 +160,7 @@ The following example is a query to check if a provided certificate chain is bou
     "resource": {
       "type": "x5c",
       "id": "did:foo:bla",
-      "key": [... x5c data ...]
+      "key": ["... x5c data ..."]
     },
     "action": {
       "name": "http://ec.europa.eu/NS/wallet-provider",
@@ -183,7 +183,7 @@ The following example is a query to check if a provided certificate chain is bou
     "resource": {
       "type": "x5c",
       "id": "www.example.com",
-      "key": [... x5c data ...],
+      "key": ["... x5c data ..."],
     },
     "action": {
       "name": "TODO:oid:tls-server",
