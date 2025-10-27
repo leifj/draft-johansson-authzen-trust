@@ -149,7 +149,7 @@ The `context` datafield MAY be present in requests but MUST NOT contain informat
 
 The following example is a query to check if a provided certificate chain is bound to the name "did:foo:bla" and is allowed act as a EUDI wallet provider.
 
-~~~json
+~~~
 {
   "type": "authzen",
   "request": {
