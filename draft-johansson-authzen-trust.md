@@ -145,11 +145,11 @@ If the `action` is present then it MUST contain at least the `name` parameter wh
 
 The `context` datafield MAY be present in requests but MUST NOT contain information that is critical for the correct processing of the request.
 
-## Examples (non-normative) -
+## Examples (non-normative)
 
 The following example is a query to check if a provided certificate chain is bound to the name "did:foo:bla" and is allowed act as a EUDI wallet provider.
 
-```json
+~~~json
 {
   "type": "authzen"
   "request": {
@@ -167,11 +167,12 @@ The following example is a query to check if a provided certificate chain is bou
     }
   }
 }
-```
+~~~
 
 The following example is a query to check if a provided certificate chain is bound to "www.example.com" and is allowed to act as a TLS server.
 
-```json
+
+~~~json
 {
   "type": "authzen",
   "request": {
@@ -189,7 +190,7 @@ The following example is a query to check if a provided certificate chain is bou
     }
   }
 }
-```
+~~~
 
 # Security Considerations
 
