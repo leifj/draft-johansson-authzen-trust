@@ -244,10 +244,16 @@ Table of Contents
      "decision": true
    }
 
-   The following is an hypothetical response with error messages: ~~~ {
-   "decision": false, "context": { "reason": { "403": "Unknown service -
-   contact helpdesk@registry.example.com for support using the following
-   identifier: #ID4711" } } } ~~~
+   The following is an hypothetical response with error messages:
+
+{
+  "decision": false,
+  "context": {
+    "reason": {
+      "403": "Unknown service - contact helpdesk@registry.example.com for support using the following identifier: #ID4711"
+    }
+  }
+}
 
 7.  Security Considerations
 
