@@ -73,7 +73,7 @@ Table of Contents
      4.2.  Resource
      4.3.  Action
      4.4.  Context
-     4.5.  Examples (non-normative) -
+     4.5.  Examples (non-normative)
    5.  Security Considerations
    6.  IANA Considerations
    7.  References
@@ -186,25 +186,51 @@ Table of Contents
    information that is critical for the correct processing of the
    request.
 
-4.5.  Examples (non-normative) -
+4.5.  Examples (non-normative)
 
    The following example is a query to check if a provided certificate
    chain is bound to the name "did:foo:bla" and is allowed act as a EUDI
    wallet provider.
 
-   json { "type": "authzen" "request": { "subject": { "type": "key",
-   "id": "did:foo:bla" }, "resource": { "type": "x5c", "id":
-   "did:foo:bla", "key": [... x5c data ...] }, "action": { "name":
-   "http://ec.europa.eu/NS/wallet-provider", } } }
+   {
+     "type": "authzen",
+     "request": {
+         "subject": {
+           "type": "key",
+           "id": "did:foo:bla"
+       },
+       "resource": {
+         "type": "x5c",
+         "id": "did:foo:bla",
+         "key": ["... x5c data ..."]
+       },
+       "action": {
+         "name": "http://ec.europa.eu/NS/wallet-provider",
+       }
+     }
+   }
 
    The following example is a query to check if a provided certificate
    chain is bound to "www.example.com" and is allowed to act as a TLS
    server.
 
-   json { "type": "authzen", "request": { "subject": { "type": "key",
-   "id": "www.example.com" }, "resource": { "type": "x5c", "id":
-   "www.example.com", "key": [... x5c data ...], }, "action": { "name":
-   "TODO:oid:tls-server", } } }
+   {
+     "type": "authzen",
+     "request": {
+         "subject": {
+           "type": "key",
+           "id": "www.example.com"
+       },
+       "resource": {
+         "type": "x5c",
+         "id": "www.example.com",
+         "key": ["... x5c data ..."],
+       },
+       "action": {
+         "name": "TODO:oid:tls-server",
+       }
+     }
+   }
 
 5.  Security Considerations
 
