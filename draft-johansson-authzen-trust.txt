@@ -4,8 +4,8 @@
 
 Network Working Group                                       L. Johansson
 Internet-Draft                                          SIROS Foundation
-Intended status: Informational                           24 October 2025
-Expires: 27 April 2026
+Intended status: Informational                           27 October 2025
+Expires: 30 April 2026
 
 
                 An AuthZEN profile for trust registries
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 April 2026.
+   This Internet-Draft will expire on 30 April 2026.
 
 Copyright Notice
 
@@ -67,9 +67,18 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Security Considerations
-   4.  IANA Considerations
-   5.  Normative References
+   3.  Endpoints
+   4.  Authorization Request
+     4.1.  Subject
+     4.2.  Resource
+     4.3.  Action
+     4.4.  Context
+     4.5.  Examples (non-normative) -
+   5.  Security Considerations
+   6.  IANA Considerations
+   7.  References
+     7.1.  Normative References
+     7.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -79,22 +88,25 @@ Table of Contents
    answering the question: is a given public key pk bound to a name n in
    context c.  One example is, given an X.509 certificate (as a
    representative of a public key and name), doing PKIX path
-   construction and subsequent path validation to determine if the X.509
-   is "valid" relative to a given set of trust roots.  In this example
-   the trust registry is the set of roots together with the rules for
-   path validation and construction set down in [RFC5280] and any
-   additional local policy applied to the validation.
+   construction and path validation to determine if the X.509 is valid
+   relative to a given set of trust roots.  In this example the trust
+   registry is the set of trust anchors together with the rules for path
+   validation and construction set down in [RFC5280] as well as any
+   additional local policy applied to the validation process.
 
-   The proliferation of distributed architectures have led to the
+   The proliferation of distributed identity systems have led to the
    development of a multitude of trust registries each with their own
    APIs for querying the registry and rules for evaluating trust.
-   Application developers are often faced with the choice of supporting
-   exactly one of these which of course leads to interoperability
-   challenges.
+   Application developers are often faced with the choice of choosing
+   one of these trust registries which leads to interoperability
+   problems.  It is often common for an service to register with
+   multiple trust registries in order to reach all intended audiences.
 
-   This document describes a local abstraction layer for trust
-   evaluation that is intended to fill a role similar to the stub
-   resolver in the DNS architecture.
+   This document describes an API for trust evaluation that is intended
+   to fill a role similar to the stub resolver in the DNS architecture.
+   The API is defined as a profile of [AUTHZEN].  AuthZen is a proposed
+   standard for communicating between an authorization policy
+   enforcement point (PEP) and a policy decision point (PDP).
 
 2.  Conventions and Definitions
 
@@ -104,32 +116,170 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Security Considerations
+   This specification uses the terms "PDP" and "PEP" defined by
+   [NIST.SP.800-162] and [XACML].  A trust registry refers to any
+   service that provides a binding (or mapping) between public keys and
+   names.  This is referred to as "name to key" binding or name-to-key.
+
+3.  Endpoints
+
+   Implementations of this specification MUST provide the /evaluation
+   endpoint and SHOULD also provide the /evaluations and discovery
+   endpoints.  The /search endpoint MAY be provided but providing this
+   endpoint may provide significant challenges for this profile and
+   clients MUST NOT assume that it is present.
+
+4.  Authorization Request
+
+   This profile models the following semantic: The client (PEP) requests
+   that the server (PDP) authorizes the binding between the name
+   specified by the Subject with the public key specified by the
+   Resource.  Optionally the Action is used to constrain the
+   authorization to a specific role that the entity that the public key
+   is bound to must have for the authorization to be approved.
+
+4.1.  Subject
+
+   Subject is used to represent the name part of the name-to-key
+   binding.
+
+   The subject datafield MUST be present in requests and MUST contain
+   the following elements:
+
+   *  id MUST be the name bound to the public key to be validated
+
+   *  type MUST be the constant string "key"
+
+4.2.  Resource
+
+   The resource datafield MUST be present in requests and MUST contain
+   the following elements:
+
+   *  type MUST be one of "jwk" or "x5c"
+
+   *  id MUST be the name bound to the public key to be validated.  It
+      MUST be the same string as in the subject.id element.
+
+   *  key MUST be the public key in a format that depends on the type.
+
+   If type is "jwk" then key MUST contain a JWK ([RFC7517]) format key.
+   If type is "x5c" then key MUST contain an array of base64 encoded
+   X.509 certificates formatted according to section 4.7 of [RFC7517].
+   Other specifications may define additional key formats in the future.
+
+4.3.  Action
+
+   The action datafield MAY be present in requests and SHOULD if present
+   be used to represent the role associated with the name-to-key
+   binding.  This is used to distinguish different uses of the same
+   name-to-key binding.  For instance the action can be used to request
+   authorization that a X.509 certificate is allowed to act as a TLS
+   server endpoint or as a digital credential issuer.
+
+   If the action is present then it MUST contain at least the name
+   parameter which MUST contain a string that represents the role.  The
+   interpretation of the role depends on the deployment.
+
+4.4.  Context
+
+   The context`` datafield MAY be present in requests but MUST NOT
+   contain information that is critical for the correct processing of
+   the request.
+
+4.5.  Examples (non-normative) -
+
+   The following example is a query to check if a provided certificate
+   chain is bound to the name "did:foo:bla" and is allowed act as a EUDI
+   wallet provider.
+
+   json { "type": "authzen" "request": { "subject": { "type": "key",
+   "id": "did:foo:bla" }, "resource": { "type": "x5c", "id":
+   "did:foo:bla", "key": [... x5c data ...] }, "action": { "name":
+   "http://ec.europa.eu/NS/wallet-provider", } } }
+
+   The following example is a query to check if a provided certificate
+   chain is bound to "www.example.com" and is allowed to act as a TLS
+   server.
+
+   json { "type": "authzen", "request": { "subject": { "type": "key",
+   "id": "www.example.com" }, "resource": { "type": "x5c", "id":
+   "www.example.com", "key": [... x5c data ...], }, "action": { "name":
+   "TODO:oid:tls-server", } } }
+
+5.  Security Considerations
 
    The protocol described in this specification is meant to be used by
-   applications that share a common trust domain and it may be perfectly
-   reasonable for deployments of this specification to run on
-   "localhost" and in other situations where security properties for the
-   protocol is provided elsewhere in the stack.  Nevertheless the
-   recommendations for authentication for AuthZen applies to this
-   profile aswell and deployments SHOULD deploy the AuthZen trust
-   endpoint with provisions for mutual authentication to ensure that
-   false trust decisions cannot affect the overall system.
+   applications that share a common security domain and it may be
+   perfectly reasonable for deployments of this specification to run
+   unauthenticated on "localhost" or in other situations where security
+   properties for the protocol is provided elsewhere in the stack.  In
+   general implementations of this specification SHOULD implement
+   [RFC6749] authentication for the purpose of authenticating the client
+   (PDP) to the server (PEP).
 
-4.  IANA Considerations
+   In addition to the above the security considerations for
+   authentication for AuthZen applies in equal measure to this profile.
+
+6.  IANA Considerations
 
    This document has no IANA actions.
 
-5.  Normative References
+7.  References
+
+7.1.  Normative References
+
+   [AUTHZEN]  Gazitt, O., Brossard, D., and A. Tulshibagwale, "OpenID
+              AuthZEN Authorization API", July 2024,
+              <https://openid.github.io/authzen/>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+   [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
+              RFC 6749, DOI 10.17487/RFC6749, October 2012,
+              <https://www.rfc-editor.org/rfc/rfc6749>.
+
+   [RFC7517]  Jones, M., "JSON Web Key (JWK)", RFC 7517,
+              DOI 10.17487/RFC7517, May 2015,
+              <https://www.rfc-editor.org/rfc/rfc7517>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
+              Interchange Format", STD 90, RFC 8259,
+              DOI 10.17487/RFC8259, December 2017,
+              <https://www.rfc-editor.org/rfc/rfc8259>.
+
+7.2.  Informative References
+
+   [NIST.SP.800-162]
+              Hu, V. C., Ferraiolo, D., Kuhn, R., Schnitzer, A.,
+              Sandlin, K., Miller, R., Scarfone, K., and NIST, "Guide to
+              Attribute Based Access Control (ABAC) Definition and
+              Considerations", NIST Special Publications
+              (General) 800-162, DOI 10.6028/NIST.SP.800-162, January
+              2014,
+              <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/
+              NIST.SP.800-162.pdf>.
+
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/rfc/rfc5280>.
+
+   [RFC9525]  Saint-Andre, P. and R. Salz, "Service Identity in TLS",
+              RFC 9525, DOI 10.17487/RFC9525, November 2023,
+              <https://www.rfc-editor.org/rfc/rfc9525>.
+
+   [XACML]    Godik, S., Ed. and T. M. (Ed.), Ed., "eXtensible Access
+              Control Markup Language (XACML) Version 1.1", n.d.,
+              <https://www.oasis-open.org/committees/xacml/repository/
+              cs-xacml-specification-1.1.pdf>.
 
 Acknowledgments
 
