@@ -190,7 +190,7 @@ The following is an hypothetical response with error messages:
   "decision": false,
   "context": {
     "reason": {
-      "403": "Unknown service - contact helpdesk@registry.example.com for support using the following identifier: [ID4711]"
+      "403": "Unknown service - contact helpdesk@registry.example.com for support using the following identifier: #ID4711"
     }
   }
 }
