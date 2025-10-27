@@ -185,6 +185,7 @@ The following is an example response with no additional context:
 ~~~
 
 The following is an hypothetical response with error messages:
+
 ~~~
 {
   "decision": false,
