@@ -133,7 +133,7 @@ The `resource` datafield MUST be present in requests and MUST contain the follow
 - `id` MUST be the name bound to the public key to be validated. It MUST be the same string as in the `subject.id` element.
 - `key` MUST be the public key in a format that depends on the `type`.
 
-If `type` is "jwk" then `key` MUST contain a JWK ([RFC7517]) format key. If `type` is "x5c" then `key` MUST contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of [RFC7517]. Other specifications may define additional key formats in the future.
+If `type` is `jwk` then `key` MUST contain a JWK ([RFC7517]) format key. If `type` is `x5c` then `key` MUST contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of [RFC7517]. Other specifications may define additional key formats in the future.
 
 ## Action
 
@@ -143,7 +143,7 @@ If the `action` is present then it MUST contain at least the `name` parameter wh
 
 ## Context
 
-The `context``` datafield MAY be present in requests but MUST NOT contain information that is critical for the correct processing of the request.
+The `context` datafield MAY be present in requests but MUST NOT contain information that is critical for the correct processing of the request.
 
 ## Examples (non-normative) -
 
