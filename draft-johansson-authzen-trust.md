@@ -172,7 +172,7 @@ The following example is a query to check if a provided certificate chain is bou
 The following example is a query to check if a provided certificate chain is bound to "www.example.com" and is allowed to act as a TLS server.
 
 
-~~~json
+~~~
 {
   "type": "authzen",
   "request": {
