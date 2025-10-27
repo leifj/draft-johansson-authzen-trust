@@ -1201,7 +1201,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Technical trust in systems using asymmetric cryptography amounts to answering the question: is a given public key pk bound to a name n in context c. One example is, given an X.509 certificate (as a representative of a public key and name), doing PKIX path construction and path validation to determine if the X.509 is valid relative to a given set of trust roots. In this example the trust registry is the set of trust anchors together with the rules for path validation and construction set down in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> as well as any additional local policy applied to the validation process.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Technical trust in systems using asymmetric cryptography often involves binding a name to a public key. One such example is, given an X.509 certificate (as a representative of a public key and name), determining its validity relative to a set of trust anchors by means of PKIX path construction and path validation. In this example the trust registry is the set of trust anchors together with the rules for path validation and construction set down in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">The proliferation of distributed identity systems have led to the development of a multitude of trust registries each with their own APIs for querying the registry and rules for evaluating trust. Application developers are often faced with the choice of choosing one of these trust registries which leads to interoperability problems. It is often common for an service to register with multiple trust registries in order to reach all intended audiences.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document describes an API for trust evaluation that is intended to fill a role similar to the stub resolver in the DNS architecture. The API is defined as a profile of <span>[<a href="#AUTHZEN" class="cite xref">AUTHZEN</a>]</span>. AuthZen is a proposed standard for communicating between an authorization policy enforcement point (PEP) and a policy decision point (PDP).<a href="#section-1-3" class="pilcrow">¶</a></p>
 </section>
@@ -1215,7 +1215,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">This specification uses the terms "PDP" and "PEP" defined by <span>[<a href="#NIST.SP.800-162" class="cite xref">NIST.SP.800-162</a>]</span> and <span>[<a href="#XACML" class="cite xref">XACML</a>]</span>. A trust registry refers to any service that provides a binding (or mapping) between public keys and names. This is referred to as "name to key" binding or name-to-key.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">This specification uses the terms "PDP" and "PEP" defined by <span>[<a href="#NIST.SP.800-162" class="cite xref">NIST.SP.800-162</a>]</span> and <span>[<a href="#XACML" class="cite xref">XACML</a>]</span>. A trust registry refers to any service that provides a binding (or mapping) between public keys and names. This is referred to as "name to key" or name-to-key binding.<a href="#section-2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="endpoints">
@@ -1231,7 +1231,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-authorization-request">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-authorization-request" class="section-name selfRef">Authorization Request</a>
       </h2>
-<p id="section-4-1">This profile models the following semantic: The client (PEP) requests that the server (PDP) authorizes the binding between the name specified by the Subject with the public key specified by the Resource. Optionally the Action is used to constrain the authorization to a specific role that the entity that the public key is bound to must have for the authorization to be approved.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">This profile implements the following semantic: The client (PEP) requests that the server (PDP) authorizes the binding between the name specified by the Subject with the public key specified by the Resource. Optionally the Action is used to constrain the authorization to a specific role that the entity that the public key is bound to must have for the authorization to be approved.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <div id="subject">
 <section id="section-4.1">
         <h3 id="name-subject">
@@ -1244,7 +1244,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
             <p id="section-4.1-3.1.1"><code>id</code> <span class="bcp14">MUST</span> be the name bound to the public key to be validated<a href="#section-4.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-3.2">
-            <p id="section-4.1-3.2.1"><code>type</code> <span class="bcp14">MUST</span> be the constant string "key"<a href="#section-4.1-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-3.2.1"><code>type</code> <span class="bcp14">MUST</span> be the constant string <code>"key"</code><a href="#section-4.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1266,7 +1266,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
             <p id="section-4.2-2.3.1"><code>key</code> <span class="bcp14">MUST</span> be the public key in a format that depends on the <code>type</code>.<a href="#section-4.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-3">If <code>type</code> is <code>jwk</code> then <code>key</code> <span class="bcp14">MUST</span> contain a JWK (<span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>) format key. If <code>type</code> is <code>x5c</code> then <code>key</code> <span class="bcp14">MUST</span> contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>. Other specifications may define additional key formats in the future.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">If <code>type</code> is <code>"jwk"</code> then <code>key</code> <span class="bcp14">MUST</span> contain a JWK (<span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>) format key. If <code>type</code> is <code>"x5c"</code> then <code>key</code> <span class="bcp14">MUST</span> contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>. Other specifications may define additional key formats in the future.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="action">
@@ -1344,7 +1344,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-security-considerations">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-5-1">The protocol described in this specification is meant to be used by applications that share a common security domain and it may be perfectly reasonable for deployments of this specification to run unauthenticated on "localhost" or in other situations where security properties for the protocol is provided elsewhere in the stack. In general implementations of this specification <span class="bcp14">SHOULD</span> implement <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> authentication for the purpose of authenticating the client (PDP) to the server (PEP).<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">The protocol described in this specification is meant to be used by applications that share a common security domain and it may be perfectly reasonable for deployments of this specification to be deployed without authentication on "localhost" or in situations where security requirements for the protocol is provided elsewhere in the stack. In general implementations of this specification <span class="bcp14">MAY</span> implement <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> authentication for the purpose of authenticating the client (PDP) to the server (PEP) and <span class="bcp14">SHOULD</span> provide a way for the PDP to be authenticated to the client.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">In addition to the above the security considerations for authentication for AuthZen applies in equal measure to this profile.<a href="#section-5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
