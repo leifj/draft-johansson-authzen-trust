@@ -1,24 +1,4 @@
 ---
-###
-# Internet-Draft Markdown Template
-#
-# Rename this file from draft-todo-yourname-protocol.md to get started.
-# Draft name format is "draft-<yourname>-<workgroup>-<name>.md".
-#
-# For initial setup, you only need to edit the first block of fields.
-# Only "title" needs to be changed; delete "abbrev" if your title is short.
-# Any other content can be edited, but be careful not to introduce errors.
-# Some fields will be set automatically during setup if they are unchanged.
-#
-# Don't include "-00" or "-latest" in the filename.
-# Labels in the form draft-<yourname>-<workgroup>-<name>-latest are used by
-# the tools to refer to the current version; see "docname" for example.
-#
-# This template uses kramdown-rfc: https://github.com/cabo/kramdown-rfc
-# You can replace the entire file if you prefer a different format.
-# Change the file extension to match the format (.xml for XML, etc...)
-#
-###
 title: "An AuthZEN profile for trust registries"
 abbrev: "AuthZEN Trust"
 category: info
@@ -95,7 +75,7 @@ Trust registries come in many forms; ETSI trust status lists, OpenID Federation,
 
 # Introduction
 
-Technical trust in systems using asymmetric cryptography amounts to answering the question: is a given public key pk bound to a name n in context c. One example is, given an X.509 certificate (as a representative of a public key and name), doing PKIX path construction and path validation to determine if the X.509 is valid relative to a given set of trust roots. In this example the trust registry is the set of trust anchors together with the rules for path validation and construction set down in [RFC5280] as well as any additional local policy applied to the validation process.
+Technical trust in systems using asymmetric cryptography often involves binding a name to a public key. One such example is, given an X.509 certificate (as a representative of a public key and name), determining its validity relative to a set of trust anchors by means of PKIX path construction and path validation. In this example the trust registry is the set of trust anchors together with the rules for path validation and construction set down in [RFC5280].
 
 The proliferation of distributed identity systems have led to the development of a multitude of trust registries each with their own APIs for querying the registry and rules for evaluating trust. Application developers are often faced with the choice of choosing one of these trust registries which leads to interoperability problems. It is often common for an service to register with multiple trust registries in order to reach all intended audiences.
 
@@ -106,7 +86,7 @@ This document describes an API for trust evaluation that is intended to fill a r
 
 {::boilerplate bcp14-tagged}
 
-This specification uses the terms "PDP" and "PEP" defined by [NIST.SP.800-162] and [XACML]. A trust registry refers to any service that provides a binding (or mapping) between public keys and names. This is referred to as "name to key" binding or name-to-key.
+This specification uses the terms "PDP" and "PEP" defined by [NIST.SP.800-162] and [XACML]. A trust registry refers to any service that provides a binding (or mapping) between public keys and names. This is referred to as "name to key" or name-to-key binding.
 
 # Endpoints
 
@@ -114,7 +94,7 @@ Implementations of this specification MUST provide the `/evaluation` endpoint an
 
 # Authorization Request
 
-This profile models the following semantic: The client (PEP) requests that the server (PDP) authorizes the binding between the name specified by the Subject with the public key specified by the Resource. Optionally the Action is used to constrain the authorization to a specific role that the entity that the public key is bound to must have for the authorization to be approved.
+This profile implements the following semantic: The client (PEP) requests that the server (PDP) authorizes the binding between the name specified by the Subject with the public key specified by the Resource. Optionally the Action is used to constrain the authorization to a specific role that the entity that the public key is bound to must have for the authorization to be approved.
 
 ## Subject
 
@@ -123,7 +103,7 @@ Subject is used to represent the name part of the name-to-key binding.
 The `subject` datafield MUST be present in requests and MUST contain the following elements:
 
 - `id` MUST be the name bound to the public key to be validated
-- `type` MUST be the constant string "key"
+- `type` MUST be the constant string `"key"`
 
 ## Resource
 
@@ -133,7 +113,7 @@ The `resource` datafield MUST be present in requests and MUST contain the follow
 - `id` MUST be the name bound to the public key to be validated. It MUST be the same string as in the `subject.id` element.
 - `key` MUST be the public key in a format that depends on the `type`.
 
-If `type` is `jwk` then `key` MUST contain a JWK ([RFC7517]) format key. If `type` is `x5c` then `key` MUST contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of [RFC7517]. Other specifications may define additional key formats in the future.
+If `type` is `"jwk"` then `key` MUST contain a JWK ([RFC7517]) format key. If `type` is `"x5c"` then `key` MUST contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of [RFC7517]. Other specifications may define additional key formats in the future.
 
 ## Action
 
@@ -194,7 +174,7 @@ The following example is a query to check if a provided certificate chain is bou
 
 # Security Considerations
 
-The protocol described in this specification is meant to be used by applications that share a common security domain and it may be perfectly reasonable for deployments of this specification to run unauthenticated on "localhost" or in other situations where security properties for the protocol is provided elsewhere in the stack. In general implementations of this specification SHOULD implement [RFC6749] authentication for the purpose of authenticating the client (PDP) to the server (PEP).
+The protocol described in this specification is meant to be used by applications that share a common security domain and it may be perfectly reasonable for deployments of this specification to be deployed without authentication on "localhost" or in situations where security requirements for the protocol is provided elsewhere in the stack. In general implementations of this specification MAY implement [RFC6749] authentication for the purpose of authenticating the client (PDP) to the server (PEP) and SHOULD provide a way for the PDP to be authenticated to the client.
 
 In addition to the above the security considerations for authentication for AuthZen applies in equal measure to this profile.
 
