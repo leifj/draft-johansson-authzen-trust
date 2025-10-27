@@ -125,7 +125,11 @@ If the `action` is present then it MUST contain at least the `name` parameter wh
 
 The `context` datafield MAY be present in requests but MUST NOT contain information that is critical for the correct processing of the request.
 
-## Examples (non-normative)
+# Authorization Response
+
+This profile does not constrain or profile the standard response message format. An implementation MAY choose to provide detailed error messages or other contextual information as per the AuthZen specification.
+
+# Examples (non-normative)
 
 The following example is a query to check if a provided certificate chain is bound to the name "did:foo:bla" and is allowed act as a EUDI wallet provider.
 
@@ -171,6 +175,27 @@ The following example is a query to check if a provided certificate chain is bou
   }
 }
 ~~~
+
+The following is an example response with no additional context:
+
+~~~
+{
+  "decision": true
+}
+~~~
+
+The following is an hypothetical response with error messages:
+~~~
+{
+  "decision": false,
+  "context": {
+    "reason": {
+      "403": "Unknown service - contact helpdesk@registry.example.com for support using the following identifier: [#ID4711]"
+    }
+  }
+}
+~~~
+
 
 # Security Considerations
 
