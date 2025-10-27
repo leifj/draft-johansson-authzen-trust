@@ -151,7 +151,7 @@ The following example is a query to check if a provided certificate chain is bou
 
 ~~~json
 {
-  "type": "authzen"
+  "type": "authzen",
   "request": {
       "subject": {
         "type": "key",
