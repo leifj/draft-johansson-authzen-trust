@@ -162,10 +162,10 @@ Table of Contents
 
    *  key MUST be the public key in a format that depends on the type.
 
-   If type is "jwk" then key MUST contain a JWK ([RFC7517]) format key.
-   If type is "x5c" then key MUST contain an array of base64 encoded
-   X.509 certificates formatted according to section 4.7 of [RFC7517].
-   Other specifications may define additional key formats in the future.
+   If type is jwk then key MUST contain a JWK ([RFC7517]) format key.
+   If type is x5c then key MUST contain an array of base64 encoded X.509
+   certificates formatted according to section 4.7 of [RFC7517].  Other
+   specifications may define additional key formats in the future.
 
 4.3.  Action
 
@@ -182,9 +182,9 @@ Table of Contents
 
 4.4.  Context
 
-   The context`` datafield MAY be present in requests but MUST NOT
-   contain information that is critical for the correct processing of
-   the request.
+   The context datafield MAY be present in requests but MUST NOT contain
+   information that is critical for the correct processing of the
+   request.
 
 4.5.  Examples (non-normative) -
 
