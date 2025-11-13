@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-11T00:31:47.278849+00:00",
+  "timestamp": "2025-11-13T00:31:11.748662+00:00",
   "repo": "leifj/draft-johansson-authzen-trust",
   "labels": [
     {
@@ -49,6 +49,23 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOQIHO-s7XTO2T",
+      "title": "Add CBOR Web keys as a key type",
+      "url": "https://github.com/leifj/draft-johansson-authzen-trust/issues/1",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I'm happy to provide a PR",
+      "createdAt": "2025-11-11T12:37:06Z",
+      "updatedAt": "2025-11-11T12:37:06Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": []
 }
