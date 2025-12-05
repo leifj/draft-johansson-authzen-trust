@@ -50,6 +50,10 @@ normative:
   RFC6749:
   RFC8259:
 informative:
+  DID:
+    title: Decentralized Identifiers (DIDs) v1.0
+    target: https://www.w3.org/TR/did-1.0/
+    date: 2022
   RFC5280:
   RFC9525:
   NIST.SP.800-162:
@@ -94,7 +98,7 @@ Implementations of this specification MUST provide the `/evaluation` endpoint an
 
 # Authorization Request
 
-This profile implements the following semantic: The client (PEP) requests that the server (PDP) authorizes the binding between the name specified by the Subject with the public key specified by the Resource. Optionally the Action is used to constrain the authorization to a specific role that the entity that the public key is bound to must have for the authorization to be approved.
+This profile implements the following semantic: The client (PEP) requests that the server (PDP) authorizes the binding between the name specified by the Subject with the public key specified by the Resource. Optionally the Action is used to constrain the authorization to a specific role that the entity that the public key is bound to must have for the authorization to be approved. The PDP may also attempt to *resolve* the name into metadata that provides additional information about the name-to-key binding.
 
 ## Subject
 
@@ -102,18 +106,29 @@ Subject is used to represent the name part of the name-to-key binding.
 
 The `subject` datafield MUST be present in requests and MUST contain the following elements:
 
-- `id` MUST be the name bound to the public key to be validated
+- `id` MUST be the name bound to the public key to be validated or resolved
 - `type` MUST be the constant string `"key"`
 
 ## Resource
 
 The `resource` datafield MUST be present in requests and MUST contain the following elements:
 
-- `type` MUST be one of "jwk" or "x5c"
-- `id` MUST be the name bound to the public key to be validated. It MUST be the same string as in the `subject.id` element.
-- `key` MUST be the public key in a format that depends on the `type`.
+- `id` MUST be the name bound to the public key to be validated or resolved. Furthermore, the value of the `resource.id` element MUST be the same string as in the `subject.id` element.
+- `type` MAY be present and if present MUST be one of "jwk" or "x5c".
+- `key` If present, MUST be the public key in a format that depends on the `type`. If `type` is absent then `key` MUST NOT be present.
 
-If `type` is `"jwk"` then `key` MUST contain a JWK ([RFC7517]) format key. If `type` is `"x5c"` then `key` MUST contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of [RFC7517]. Other specifications may define additional key formats in the future.
+If `type`is present then,
+
+- If `type` is `"jwk"` then `key` MUST contain a JWK ([RFC7517]) format key.
+- If `type` is `"x5c"` then `key` MUST contain an array of base64 encoded X.509 certificates formatted according to section 4.7 of [RFC7517].
+
+Some trust registries support unambiguous name-to-key discovery. For such trust registries `key` and `type` MAY be elided from the Resource as described above.
+
+When `type` and `key` is present however, a PDP implementing this specification MUST validate that the key is bound to `subject.id` even if `subject.id` is a name bound to a trust registry that supports unambiguous name-to-key discovery.
+
+The PDP MAY include additional *metadata* associated with `subject.id` in the result. The method by which this is done is an implementation detail but for instance when the `subject.id` is a "DID" then the resolution MAY be done by the lookup process of a supported DID method.  It is RECOMMENDED that PDPs that support such trust registries return the appropriate metadata in the response.
+
+Other specifications may define additional key formats in the future.
 
 ## Action
 
@@ -127,7 +142,7 @@ The `context` datafield MAY be present in requests but MUST NOT contain informat
 
 # Authorization Response
 
-This profile does not constrain or profile the standard response message format. An implementation MAY choose to provide detailed error messages or other contextual information as per the AuthZen specification.
+The Authorization Response MAY return metadata associated with `subject.id` in the response using the `trust_metadata` field. When the request `type` is absent then the `trust_metadata` field SHOULD be present.
 
 # Examples (non-normative)
 
@@ -184,6 +199,25 @@ The following is an example response with no additional context:
 }
 ~~~
 
+The following is an example response with trust_metadata that contains an (abbreviated) DID document.
+
+~~~
+{
+  "decision": true,
+  "context": {
+    trust_metadata: {
+      {
+        "@context": [
+          "https://www.w3.org/ns/did/v1",
+          "https://w3id.org/security/suites/ed25519-2020/v1"
+        ],
+        "id": "did:example:123",
+        ....
+    }
+  }
+}
+~~~
+
 The following is an hypothetical response with error messages:
 
 ~~~
@@ -197,6 +231,9 @@ The following is an hypothetical response with error messages:
 }
 ~~~
 
+# AuthZen Trust as a DID resolver
+
+As should be obvious from the specification above, a DID resolver as specified in section 7 of [DID] share many properties with this specification. Notable differences is that error handling is slightly different and content negotiation is handled by the PDP which means that DID resolution options (section 7.1.1 of [DID]) isn't needed in this case.
 
 # Security Considerations
 
