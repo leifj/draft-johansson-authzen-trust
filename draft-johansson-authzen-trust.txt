@@ -4,8 +4,8 @@
 
 Network Working Group                                       L. Johansson
 Internet-Draft                                          SIROS Foundation
-Intended status: Informational                           27 October 2025
-Expires: 30 April 2026
+Intended status: Informational                           5 December 2025
+Expires: 8 June 2026
 
 
                 An AuthZEN profile for trust registries
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 April 2026.
+   This Internet-Draft will expire on 8 June 2026.
 
 Copyright Notice
 
@@ -75,11 +75,12 @@ Table of Contents
      4.4.  Context
    5.  Authorization Response
    6.  Examples (non-normative)
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   7.  AuthZen Trust as a DID resolver
+   8.  Security Considerations
+   9.  IANA Considerations
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -135,7 +136,9 @@ Table of Contents
    name specified by the Subject with the public key specified by the
    Resource.  Optionally the Action is used to constrain the
    authorization to a specific role that the entity that the public key
-   is bound to must have for the authorization to be approved.
+   is bound to must have for the authorization to be approved.  The PDP
+   may also attempt to _resolve_ the name into metadata that provides
+   additional information about the name-to-key binding.
 
 4.1.  Subject
 
@@ -145,7 +148,8 @@ Table of Contents
    The subject datafield MUST be present in requests and MUST contain
    the following elements:
 
-   *  id MUST be the name bound to the public key to be validated
+   *  id MUST be the name bound to the public key to be validated or
+      resolved
 
    *  type MUST be the constant string "key"
 
@@ -154,16 +158,40 @@ Table of Contents
    The resource datafield MUST be present in requests and MUST contain
    the following elements:
 
-   *  type MUST be one of "jwk" or "x5c"
+   *  id MUST be the name bound to the public key to be validated or
+      resolved.  Furthermore, the value of the resource.id element MUST
+      be the same string as in the subject.id element.
 
-   *  id MUST be the name bound to the public key to be validated.  It
-      MUST be the same string as in the subject.id element.
+   *  type MAY be present and if present MUST be one of "jwk" or "x5c".
 
-   *  key MUST be the public key in a format that depends on the type.
+   *  key If present, MUST be the public key in a format that depends on
+      the type.  If type is absent then key MUST NOT be present.
 
-   If type is "jwk" then key MUST contain a JWK ([RFC7517]) format key.
-   If type is "x5c" then key MUST contain an array of base64 encoded
-   X.509 certificates formatted according to section 4.7 of [RFC7517].
+   If typeis present then,
+
+   *  If type is "jwk" then key MUST contain a JWK ([RFC7517]) format
+      key.
+
+   *  If type is "x5c" then key MUST contain an array of base64 encoded
+      X.509 certificates formatted according to section 4.7 of
+      [RFC7517].
+
+   Some trust registries support unambiguous name-to-key discovery.  For
+   such trust registries key and type MAY be elided from the Resource as
+   described above.
+
+   When type and key is present however, a PDP implementing this
+   specification MUST validate that the key is bound to subject.id even
+   if subject.id is a name bound to a trust registry that supports
+   unambiguous name-to-key discovery.
+
+   The PDP MAY include additional _metadata_ associated with subject.id
+   in the result.  The method by which this is done is an implementation
+   detail but for instance when the subject.id is a "DID" then the
+   resolution MAY be done by the lookup process of a supported DID
+   method.  It is RECOMMENDED that PDPs that support such trust
+   registries return the appropriate metadata in the response.
+
    Other specifications may define additional key formats in the future.
 
 4.3.  Action
@@ -187,10 +215,10 @@ Table of Contents
 
 5.  Authorization Response
 
-   This profile does not constrain or profile the standard response
-   message format.  An implementation MAY choose to provide detailed
-   error messages or other contextual information as per the AuthZen
-   specification.
+   The Authorization Response MAY return metadata associated with
+   subject.id in the response using the trust_metadata field.  When the
+   request type is absent then the trust_metadata field SHOULD be
+   present.
 
 6.  Examples (non-normative)
 
@@ -244,6 +272,24 @@ Table of Contents
      "decision": true
    }
 
+   The following is an example response with trust_metadata that
+   contains an (abbreviated) DID document.
+
+   {
+     "decision": true,
+     "context": {
+       trust_metadata: {
+         {
+           "@context": [
+             "https://www.w3.org/ns/did/v1",
+             "https://w3id.org/security/suites/ed25519-2020/v1"
+           ],
+           "id": "did:example:123",
+           ....
+       }
+     }
+   }
+
    The following is an hypothetical response with error messages:
 
 {
@@ -255,7 +301,16 @@ Table of Contents
   }
 }
 
-7.  Security Considerations
+7.  AuthZen Trust as a DID resolver
+
+   As should be obvious from the specification above, a DID resolver as
+   specified in section 7 of [DID] share many properties with this
+   specification.  Notable differences is that error handling is
+   slightly different and content negotiation is handled by the PDP
+   which means that DID resolution options (section 7.1.1 of [DID])
+   isn't needed in this case.
+
+8.  Security Considerations
 
    The protocol described in this specification is meant to be used by
    applications that share a common security domain and it may be
@@ -270,13 +325,13 @@ Table of Contents
    In addition to the above the security considerations for
    authentication for AuthZen applies in equal measure to this profile.
 
-8.  IANA Considerations
+9.  IANA Considerations
 
    This document has no IANA actions.
 
-9.  References
+10.  References
 
-9.1.  Normative References
+10.1.  Normative References
 
    [AUTHZEN]  Gazitt, O., Brossard, D., and A. Tulshibagwale, "OpenID
               AuthZEN Authorization API", July 2024,
@@ -304,7 +359,10 @@ Table of Contents
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/rfc/rfc8259>.
 
-9.2.  Informative References
+10.2.  Informative References
+
+   [DID]      "Decentralized Identifiers (DIDs) v1.0", 2022,
+              <https://www.w3.org/TR/did-1.0/>.
 
    [NIST.SP.800-162]
               Hu, V. C., Ferraiolo, D., Kuhn, R., Schnitzer, A.,
