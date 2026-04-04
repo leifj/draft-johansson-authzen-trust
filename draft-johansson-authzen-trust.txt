@@ -4,8 +4,8 @@
 
 Network Working Group                                       L. Johansson
 Internet-Draft                                          SIROS Foundation
-Intended status: Informational                           5 December 2025
-Expires: 8 June 2026
+Intended status: Informational                              4 April 2026
+Expires: 6 October 2026
 
 
                 An AuthZEN profile for trust registries
@@ -47,11 +47,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 June 2026.
+   This Internet-Draft will expire on 6 October 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -72,6 +72,7 @@ Table of Contents
      4.1.  Subject
      4.2.  Resource
      4.3.  Action
+       4.3.1.  Action Parameters
      4.4.  Context
    5.  Authorization Response
    6.  Examples (non-normative)
@@ -207,6 +208,27 @@ Table of Contents
    parameter which MUST contain a string that represents the role.  The
    interpretation of the role depends on the deployment.
 
+4.3.1.  Action Parameters
+
+   The action datafield MAY contain a parameters object with additional
+   constraints for the authorization request.  The interpretation of
+   parameters is defined by the action.name value.
+
+   For example, when action.name indicates a credential issuer role,
+   parameters MAY contain:
+
+   *  credential_types: An array of credential type identifiers.  For
+      SD-JWT Verifiable Credentials, this is the Verifiable Credential
+      Type (VCT) value, e.g., "eu.europa.ec.eudi.pid.1".
+
+   *  query: A credential query object, e.g., a DCQL (Digital
+      Credentials Query Language) query.
+
+   The PDP SHOULD only return a positive decision if the subject
+   satisfies the constraints specified in parameters.  If parameters is
+   absent, no additional constraints apply beyond the role specified by
+   action.name.
+
 4.4.  Context
 
    The context datafield MAY be present in requests but MUST NOT contain
@@ -240,6 +262,28 @@ Table of Contents
        },
        "action": {
          "name": "http://ec.europa.eu/NS/wallet-provider",
+       }
+     }
+   }
+
+   The following example queries whether an issuer is authorized to
+   issue PID credentials by specifying the credential type in the action
+   parameters:
+
+   {
+     "subject": {
+       "type": "key",
+       "id": "https://issuer.example.gov"
+     },
+     "resource": {
+       "type": "x5c",
+       "id": "https://issuer.example.gov",
+       "key": ["... x5c data ..."]
+     },
+     "action": {
+       "name": "urn:eudi:credential-issuer",
+       "parameters": {
+         "credential_types": ["eu.europa.ec.eudi.pid.1"]
        }
      }
    }
