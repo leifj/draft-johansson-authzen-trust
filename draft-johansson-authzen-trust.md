@@ -136,6 +136,17 @@ The `action` datafield MAY be present in requests and SHOULD if present be used 
 
 If the `action` is present then it MUST contain at least the `name` parameter which MUST contain a string that represents the role. The interpretation of the role depends on the deployment.
 
+### Action Parameters
+
+The `action` datafield MAY contain a `parameters` object with additional constraints for the authorization request. The interpretation of `parameters` is defined by the `action.name` value.
+
+For example, when `action.name` indicates a credential issuer role, `parameters` MAY contain:
+
+- `credential_types`: An array of credential type identifiers. For SD-JWT Verifiable Credentials, this is the Verifiable Credential Type (VCT) value, e.g., `"eu.europa.ec.eudi.pid.1"`.
+- `query`: A credential query object, e.g., a DCQL (Digital Credentials Query Language) query.
+
+The PDP SHOULD only return a positive decision if the subject satisfies the constraints specified in `parameters`. If `parameters` is absent, no additional constraints apply beyond the role specified by `action.name`.
+
 ## Context
 
 The `context` datafield MAY be present in requests but MUST NOT contain information that is critical for the correct processing of the request.
@@ -163,6 +174,28 @@ The following example is a query to check if a provided certificate chain is bou
     },
     "action": {
       "name": "http://ec.europa.eu/NS/wallet-provider",
+    }
+  }
+}
+~~~
+
+The following example queries whether an issuer is authorized to issue PID credentials by specifying the credential type in the action parameters:
+
+~~~
+{
+  "subject": {
+    "type": "key",
+    "id": "https://issuer.example.gov"
+  },
+  "resource": {
+    "type": "x5c",
+    "id": "https://issuer.example.gov",
+    "key": ["... x5c data ..."]
+  },
+  "action": {
+    "name": "urn:eudi:credential-issuer",
+    "parameters": {
+      "credential_types": ["eu.europa.ec.eudi.pid.1"]
     }
   }
 }
