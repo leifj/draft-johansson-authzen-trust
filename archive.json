@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-02T00:43:00.042269+00:00",
+  "timestamp": "2026-04-05T00:48:39.353229+00:00",
   "repo": "leifj/draft-johansson-authzen-trust",
   "labels": [
     {
@@ -67,5 +67,34 @@
       "comments": []
     }
   ],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 2,
+      "id": "PR_kwDOQIHO-s7P9Egz",
+      "title": "Add action.parameters for credential type filtering",
+      "url": "https://github.com/leifj/draft-johansson-authzen-trust/pull/2",
+      "state": "MERGED",
+      "author": "leifj",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\nExtends the Action section to support a generic `parameters` object that allows role-specific constraints for authorization requests.\n\n## Changes\n\n1. **New subsection \"Action Parameters\"** - Documents the optional `parameters` object in action requests\n2. **Common parameter types** documented for credential issuer roles:\n   - `credential_types`: Array of credential type identifiers (e.g., SD-JWT VCT values)\n   - `query`: Credential query objects (e.g., DCQL)\n3. **New example** showing credential type filtering for PID issuers\n\n## Motivation\n\nThis change supports use cases where trust decisions need to consider not just the role (e.g., \"credential issuer\") but also what types of credentials an entity is authorized to issue or verify.\n\nExample: A wallet may want to verify that an issuer presenting a PID credential is actually authorized by the trust registry to issue PID credentials specifically, not just any credential.\n\nAddresses siros-id/go-trust#19",
+      "createdAt": "2026-04-04T12:30:36Z",
+      "updatedAt": "2026-04-04T12:54:43Z",
+      "baseRepository": "leifj/draft-johansson-authzen-trust",
+      "baseRefName": "main",
+      "baseRefOid": "ffdafc3d11823a1ec998888c5f95adf3379e7831",
+      "headRepository": "leifj/draft-johansson-authzen-trust",
+      "headRefName": "feature/action-parameters",
+      "headRefOid": "6b5a20b31f11a3afdbfe262e4b03ad6d82f3de63",
+      "closedAt": "2026-04-04T12:54:39Z",
+      "mergedAt": "2026-04-04T12:54:39Z",
+      "mergedBy": "leifj",
+      "mergeCommit": {
+        "oid": "d9f62bc90520369765cd9e1419cffc92956c0907"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
